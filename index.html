@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Waqt: Prayer times and a verse for today</title>
+<meta name="description" content="Prayer times for your location, a verse of the day, and a simple place to start learning about Islam.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef3f1;--ink:#12372f;--mute:#4f6b63;--line:#c9d8d3;--accent:#a8741a;--card:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#0f2a24;--ink:#e6efeb;--mute:#9bb5ac;--line:#24463d;--accent:#e0b25a;--card:#143630}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,sans-serif}
+main{max-width:640px;margin:0 auto;padding:32px 20px 64px}
+h1{font:600 2rem/1.15 Newsreader,serif;margin:0 0 4px}
+.sub{color:var(--mute);margin:0 0 24px}
+.verse{background:var(--card);border-left:4px solid var(--accent);padding:20px 22px;margin-bottom:32px;border-radius:4px}
+.verse .ar{font:400 1.6rem/2.1 'Amiri','Noto Naskh Arabic',serif;direction:rtl;margin:0 0 12px}
+.verse .en{font:italic 400 1.2rem/1.6 Newsreader,serif;margin:0 0 8px}
+.verse .ref{color:var(--mute);font-size:.9rem;margin:0}
+.next{font:600 1.4rem Newsreader,serif;margin:0 0 4px}
+.place{color:var(--mute);margin:0 0 16px;font-size:.95rem}
+ul{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+li{display:flex;justify-content:space-between;padding:12px 4px;border-bottom:1px solid var(--line);font-size:1.1rem}
+li.on{background:var(--card);border-left:4px solid var(--accent);padding-left:12px;font-weight:600}
+form{display:flex;gap:8px;margin-top:24px;flex-wrap:wrap}
+input,button{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:4px;background:var(--card);color:var(--ink)}
+input{flex:1;min-width:120px}
+button{background:var(--ink);color:var(--bg);border-color:var(--ink);cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.msg{color:var(--mute)}
+li{cursor:pointer}
+#info{background:var(--card);border-left:4px solid var(--accent);padding:12px 16px;margin:12px 0 0;border-radius:4px;display:none}
+.hint{color:var(--mute);font-size:.9rem;margin:8px 0 0}
+.learn{margin-top:48px}
+.learn h2{font:600 1.5rem Newsreader,serif;margin:0 0 4px}
+details{border-bottom:1px solid var(--line);padding:12px 0}
+summary{cursor:pointer;font-weight:600}
+details p,details ol,details ul{margin:8px 0 0}
+details ol,details ul{padding-left:20px}
+.g{border-bottom:1px dotted var(--accent);cursor:help;background:none;border-top:0;border-left:0;border-right:0;padding:0;color:inherit;font:inherit}
+#tip{position:fixed;left:12px;right:12px;bottom:12px;max-width:600px;margin:0 auto;background:var(--ink);color:var(--bg);padding:12px 16px;border-radius:6px;display:none}
+.note{color:var(--mute);font-size:.95rem;margin-top:16px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Waqt</h1>
+  <p class="sub" id="date"></p>
+
+  <section class="verse" aria-live="polite">
+    <p class="ar" id="ar"></p>
+    <p class="en" id="en">Loading today's verse…</p>
+    <p class="ref" id="ref"></p>
+  </section>
+
+  <p class="next" id="next"></p>
+  <p class="place" id="place">Finding your location…</p>
+  <ul id="times"></ul>
+  <p class="hint">Tap a prayer to learn what it is.</p>
+  <div id="info" aria-live="polite"></div>
+
+  <form id="f">
+    <input id="city" placeholder="City (e.g. Moshi)" required>
+    <input id="country" placeholder="Country (e.g. Tanzania)" required>
+    <button>Show times</button>
+  </form>
+  <p class="msg" id="msg"></p>
+
+  <section class="learn">
+    <h2>New to Islam? Start here</h2>
+    <p class="sub">Short answers in plain language. Dotted words can be tapped for their meaning.</p>
+
+    <details open><summary>What Muslims believe</summary>
+      <p>Muslims believe in one God, called <button class="g" data-t="Allah">Allah</button> in Arabic (the same word Arabic-speaking Christians use for God). They believe God sent prophets to guide people, including Adam, Abraham, Moses and Jesus, and that Muhammad was the last of them.</p>
+      <p>Muslims honor Jesus (called <button class="g" data-t="Isa">Isa</button>) as a prophet born to Mary, but they do not believe he is God or the Son of God. This is one of the main differences from Christianity.</p>
+    </details>
+
+    <details><summary>The Quran</summary>
+      <p>The <button class="g" data-t="Quran">Quran</button> is the book Muslims believe was revealed to the Prophet Muhammad over about 23 years. It is recited in Arabic, and translations are used to understand the meaning. The verse of the day above comes from it.</p>
+    </details>
+
+    <details><summary>The Five Pillars</summary>
+      <ol>
+        <li><b><button class="g" data-t="Shahada">Shahada</button></b>: declaring that there is no god but God and Muhammad is his messenger.</li>
+        <li><b><button class="g" data-t="Salah">Salah</button></b>: the five daily prayers.</li>
+        <li><b><button class="g" data-t="Zakat">Zakat</button></b>: giving a set share of savings (2.5%) to people in need.</li>
+        <li><b><button class="g" data-t="Sawm">Sawm</button></b>: fasting from dawn to sunset during the month of Ramadan.</li>
+        <li><b><button class="g" data-t="Hajj">Hajj</button></b>: pilgrimage to Makkah, once in a lifetime for those who are able.</li>
+      </ol>
+    </details>
+
+    <details><summary>How a prayer is done</summary>
+      <ol>
+        <li>Wash for prayer (<button class="g" data-t="Wudu">wudu</button>): hands, mouth, nose, face, arms to the elbows, wipe the head and ears, wash the feet.</li>
+        <li>Stand clean, facing the <button class="g" data-t="Qibla">Qibla</button>, and say "Allahu Akbar" (God is the greatest).</li>
+        <li>Recite the opening chapter of the Quran, Al-Fatiha, standing.</li>
+        <li>Bow, stand up, then kneel and place your forehead on the ground (<button class="g" data-t="Sujud">sujud</button>) twice.</li>
+        <li>Each set of these movements is a <button class="g" data-t="Rakah">rak'ah</button>. At the end, sit, recite, and say "peace be upon you" to the right and left.</li>
+      </ol>
+      <p class="note">Words, number of rak'ahs and posture are best learned by watching someone do it. Ask at a local mosque.</p>
+    </details>
+
+    <details><summary>Want to become Muslim?</summary>
+      <p>You become Muslim by saying the Shahada sincerely. You do not need to know everything first, and learning continues for life. A good next step is to visit a local mosque, meet the imam, and ask your questions. It helps to learn with real people, not only from a website.</p>
+    </details>
+
+    <p class="note">This guide is a simple introduction, not a full teaching. For deeper questions, ask a trusted Muslim teacher.</p>
+  </section>
+</main>
+<div id="tip" role="status"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const NAMES = ["Fajr","Sunrise","Dhuhr","Asr","Maghrib","Isha"];
+let tick;
+
+// Verse of the day: same ayah for everyone on a given date, no data to maintain
+async function loadVerse(){
+  const d = new Date(), day = Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5);
+  const n = (day * 7919) % 6236 + 1;
+  try{
+    const r = await fetch(`https://api.alquran.cloud/v1/ayah/${n}/editions/quran-uthmani,en.sahih`);
+    const [a,e] = (await r.json()).data;
+    $("ar").textContent = a.text; $("en").textContent = e.text;
+    $("ref").textContent = `Surah ${a.surah.englishName} (${a.surah.number}:${a.numberInSurah})`;
+  }catch{ $("en").textContent = "Couldn't load today's verse. Refresh to try again."; }
+}
+
+function render(data){
+  const t = data.timings, tz = data.meta.timezone, h = data.date.hijri;
+  $("date").textContent = `${data.date.readable} · ${h.day} ${h.month.en} ${h.year} AH`;
+  const list = NAMES.map(n => [n, t[n].slice(0,5)]);
+  $("times").innerHTML = list.map(([n,v]) => `<li data-n="${n}"><span>${n}</span><span>${v}</span></li>`).join("");
+  clearInterval(tick);
+  const update = () => {
+    const now = new Date().toLocaleTimeString("en-GB",{timeZone:tz,hour12:false,hour:"2-digit",minute:"2-digit"});
+    const nxt = list.find(([n,v]) => v > now);
+    document.querySelectorAll("li").forEach(li => li.classList.toggle("on", nxt && li.dataset.n === nxt[0]));
+    $("next").textContent = nxt ? `Next: ${nxt[0]} at ${nxt[1]}` : "All of today's prayers have passed";
+  };
+  update(); tick = setInterval(update, 30000);
+}
+
+async function get(url, label){
+  $("msg").textContent = "";
+  try{
+    const r = await fetch(url), j = await r.json();
+    if(j.code !== 200) throw 0;
+    $("place").textContent = label || j.data.meta.timezone;
+    render(j.data);
+  }catch{ $("msg").textContent = "Couldn't load prayer times. Check the city and country spelling and try again."; }
+}
+
+$("f").addEventListener("submit", e => {
+  e.preventDefault();
+  const c = $("city").value.trim(), k = $("country").value.trim();
+  get(`https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(c)}&country=${encodeURIComponent(k)}`, `${c}, ${k}`);
+});
+
+const PRAYERS = {
+  Fajr:"The dawn prayer, prayed before sunrise. 2 rak'ahs. It starts the day with God.",
+  Sunrise:"Not a prayer. It marks the end of the time for Fajr.",
+  Dhuhr:"The midday prayer, after the sun passes its highest point. 4 rak'ahs.",
+  Asr:"The afternoon prayer, prayed in the late afternoon. 4 rak'ahs.",
+  Maghrib:"The sunset prayer, prayed just after the sun sets. 3 rak'ahs. Fasting ends at this time during Ramadan.",
+  Isha:"The night prayer, prayed once the evening light has gone. 4 rak'ahs."
+};
+const GLOSS = {
+  Allah:"The Arabic word for God.",
+  Isa:"The Arabic name for Jesus.",
+  Quran:"The holy book of Islam.",
+  Shahada:"The declaration of faith: there is no god but God, and Muhammad is his messenger.",
+  Salah:"The ritual prayer Muslims do five times a day.",
+  Zakat:"Yearly giving to the poor, 2.5% of savings above a minimum amount.",
+  Sawm:"Fasting. In Ramadan Muslims do not eat or drink from dawn to sunset.",
+  Hajj:"The pilgrimage to Makkah in Saudi Arabia.",
+  Wudu:"The washing done before prayer.",
+  Qibla:"The direction of the Kaaba in Makkah. Muslims face it to pray.",
+  Sujud:"Prostration: forehead, nose, hands, knees and toes on the ground.",
+  Rakah:"One full unit of prayer: standing, bowing, and two prostrations."
+};
+$("times").addEventListener("click", e => {
+  const li = e.target.closest("li"); if(!li) return;
+  const box = $("info"); box.style.display = "block";
+  box.textContent = `${li.dataset.n}: ${PRAYERS[li.dataset.n]}`;
+});
+let tipTimer;
+document.addEventListener("click", e => {
+  const g = e.target.closest(".g"), tip = $("tip");
+  if(!g){ tip.style.display = "none"; return; }
+  tip.textContent = `${g.textContent}: ${GLOSS[g.dataset.t]}`;
+  tip.style.display = "block";
+  clearTimeout(tipTimer); tipTimer = setTimeout(() => tip.style.display = "none", 6000);
+});
+
+loadVerse();
+if(navigator.geolocation){
+  navigator.geolocation.getCurrentPosition(
+    p => get(`https://api.aladhan.com/v1/timings?latitude=${p.coords.latitude}&longitude=${p.coords.longitude}`),
+    () => $("place").textContent = "Location blocked. Enter your city below.",
+    {timeout:8000}
+  );
+} else $("place").textContent = "Enter your city below.";
+</script>
+</body>
+</html>
